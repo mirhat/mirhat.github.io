@@ -1,0 +1,22 @@
+<table>
+    <thead>
+        <tr>
+            <th ng-repeat="header in data.headers">{{header.name}}</th>
+        </tr>
+        <tr>
+            <th ng-repeat="header in data.headers">
+                <div ng-switch on="header.filter.type">
+                    <input type="text" ng-switch-when="text">
+                    <select ng-switch-when="list">
+                        <option ng-repeat="filterOption in header.filter.options" value="filterOption">{{filterOption}}</option>
+                    </select>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="dataRow in data.data">
+            <td ng-repeat="(key, value) in dataRow">{{value}}</td>
+        </tr>
+    </tbody>
+</table>
