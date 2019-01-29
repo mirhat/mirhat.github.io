@@ -48,7 +48,7 @@ angular.module('FilterTableApp', [])
                 data: 'status',
                 filter: {
                     type: 'list',
-                    options: ['Pending', 'Accepted', 'Rejected']
+                    options: ['All', 'Pending', 'Accepted', 'Rejected']
                 }
             }],
             data: [
@@ -1640,7 +1640,7 @@ angular.module('FilterTableApp', [])
                     profession: "Scientist",
                     registrationDate: "19/03/2017",
                     registrationExpiration: "11/04/2019",
-                    status: "Pending"
+                    status: "Rejected"
                 },
                 {
                     name: "Ciaran Perkins",
@@ -2100,20 +2100,28 @@ angular.module('FilterTableApp', [])
                     return $scope.currentPage === $scope.pageCount() ? "disabled" : "";
                 };
                 // end pagination
-                
 
-                $scope.filterData = function (data, type) {
+
+                $scope.filterData = function () {
+                    $scope.filteredData = $scope.data.data;
                     $scope.currentPage = 1;
-                    var value = $scope.filters[data];
 
-                    $scope.filteredData = $scope.data.data.filter(function (dataItem) {
-                        if (type == 'text') {
-                            return dataItem[data].toLowerCase().indexOf(value.toLowerCase()) != -1;
-                        } else if (type == 'list') {
-                            return dataItem[data] == value;
+                    for (var filter in $scope.filters) {
+                        var header = $scope.data.headers.find(a => a.data == filter);
+                        if (header != null && header.filter != null) {
+                            var type = header.filter.type;
+                            var value = $scope.filters[filter];                            
+
+                            $scope.filteredData = $scope.filteredData.filter(function (dataItem) {
+                                if (type == 'text') {
+                                    return dataItem[filter].toLowerCase().indexOf(value.toLowerCase()) != -1;
+                                } else if (type == 'list') {
+                                    return dataItem[filter] == value || value == 'All';
+                                }
+                                return false;
+                            });
                         }
-                        return false;
-                    });
+                    }                    
                 };
 
                 $scope.clearFilters = function () {
