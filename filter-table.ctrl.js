@@ -1,4 +1,4 @@
-angular.module('FilterTableApp', [])
+angular.module('FilterTableApp', ['ui.select2'])
     .controller('FilterTableController', function ($scope) {
         $scope.users = {
             headers: [{
@@ -29,7 +29,9 @@ angular.module('FilterTableApp', [])
                 name: 'Profession',
                 data: 'profession',
                 filter: {
-                    type: 'text'
+                    type: 'list',
+                    multiple: true,
+                    options: ['Scientist', 'Software engineers', 'Programmer']
                 }
             }, {
                 name: 'Registration date',
@@ -48,6 +50,7 @@ angular.module('FilterTableApp', [])
                 data: 'status',
                 filter: {
                     type: 'list',
+                    multiple: false,
                     options: ['All', 'Pending', 'Accepted', 'Rejected']
                 }
             }],
@@ -2054,6 +2057,7 @@ angular.module('FilterTableApp', [])
                 }
             ]
         };
+
         $scope.filterModel = function (t) {
             return 'filter' + t;
         }
@@ -2110,13 +2114,18 @@ angular.module('FilterTableApp', [])
                         var header = $scope.data.headers.find(a => a.data == filter);
                         if (header != null && header.filter != null) {
                             var type = header.filter.type;
-                            var value = $scope.filters[filter];                            
+                            var value = $scope.filters[filter];    
+                            var multiple = header.filter.multiple;                        
 
                             $scope.filteredData = $scope.filteredData.filter(function (dataItem) {
                                 if (type == 'text') {
                                     return dataItem[filter].toLowerCase().indexOf(value.toLowerCase()) != -1;
                                 } else if (type == 'list') {
-                                    return dataItem[filter] == value || value == 'All';
+                                    if (multiple) {
+                                        return value.length == 0 || value.some(v => dataItem[filter] == v);                                        
+                                    } else {
+                                        return dataItem[filter] == value || value == 'All';
+                                    }                                    
                                 }
                                 return false;
                             });

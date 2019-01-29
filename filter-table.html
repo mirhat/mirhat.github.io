@@ -7,9 +7,12 @@
             </tr>
             <tr>
                 <th ng-repeat="header in data.headers">
-                    <div ng-switch on="header.filter.type">
-                        <input type="text" ng-switch-when="text" ng-model="filters[header.data]" ng-change="filterData(header.data, header.filter.type)">
-                        <select ng-switch-when="list" ng-model="filters[header.data]" ng-change="filterData(header.data, header.filter.type)">
+                    <div>
+                        <input type="text" ng-if="header.filter.type == 'text'" ng-model="filters[header.data]" ng-change="filterData(header.data, header.filter.type)">
+                        <select ng-if="header.filter.type == 'list' && !header.filter.multiple" ui-select2="select2Options" ng-model="filters[header.data]" ng-change="filterData(header.data, header.filter.type)">
+                            <option ng-repeat="filterOption in header.filter.options" ng-value="filterOption">{{filterOption}}</option>
+                        </select>
+                        <select ng-if="header.filter.type == 'list' && header.filter.multiple" multiple ui-select2="select2Options" ng-model="filters[header.data]" ng-change="filterData(header.data, header.filter.type)">
                             <option ng-repeat="filterOption in header.filter.options" ng-value="filterOption">{{filterOption}}</option>
                         </select>
                     </div>

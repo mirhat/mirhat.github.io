@@ -52,3 +52,7 @@ tbody tr:hover {
     display: inline;
     margin: 10px;
 }
+
+.select2-container {
+    min-width: 120px;
+}
