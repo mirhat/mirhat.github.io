@@ -1,26 +1,40 @@
 <div>
     <input type="button" value="Clear filters" ng-click="clearFilters()">
-        <table>
-                <thead>
-                    <tr>
-                        <th ng-repeat="header in data.headers">{{header.name}}</th>
-                    </tr>
-                    <tr>
-                        <th ng-repeat="header in data.headers">
-                            <div ng-switch on="header.filter.type">
-                                <input type="text" ng-switch-when="text" ng-model="filters[header.data]" ng-change="filterData(header.data, header.filter.type)">
-                                <select ng-switch-when="list" ng-model="filters[header.data]" ng-change="filterData(header.data, header.filter.type)">
-                                    <option ng-repeat="filterOption in header.filter.options" ng-value="filterOption">{{filterOption}}</option>
-                                </select>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="dataRow in filteredData">
-                        <td ng-repeat="(key, value) in dataRow">{{value}}</td>
-                    </tr>
-                </tbody>
-            </table>
+    <table class="u-full-width">
+        <thead>
+            <tr>
+                <th ng-repeat="header in data.headers">{{header.name}}</th>
+            </tr>
+            <tr>
+                <th ng-repeat="header in data.headers">
+                    <div ng-switch on="header.filter.type">
+                        <input type="text" ng-switch-when="text" ng-model="filters[header.data]" ng-change="filterData(header.data, header.filter.type)">
+                        <select ng-switch-when="list" ng-model="filters[header.data]" ng-change="filterData(header.data, header.filter.type)">
+                            <option ng-repeat="filterOption in header.filter.options" ng-value="filterOption">{{filterOption}}</option>
+                        </select>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="dataRow in filteredData |
+                    offset: (currentPage-1)*itemsPerPage |
+                    limitTo: itemsPerPage">
+                <td ng-repeat="(key, value) in dataRow">{{value}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="pagination">
+        <ul>
+            <li ng-class="prevPageDisabled()">
+                <a href ng-click="prevPage()">« Prev</a>
+            </li>
+            <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                <a href="#">{{n+1}}</a>
+            </li>
+            <li ng-class="nextPageDisabled()">
+                <a href ng-click="nextPage()">Next »</a>
+            </li>
+        </ul>
+    </div>
 </div>
-
